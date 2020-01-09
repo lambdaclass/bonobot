@@ -30,12 +30,13 @@ def make_app():
         if payload['type'] == 'url_verification':
             return {'challenge': payload['challenge']}
 
-        if payload['event']['type'] == 'app_mention':
+        if (payload['event']['type'] == 'app_mention' or
+            (payload['event']['type'] == 'message' and 'bono' in payload['event']['text'])):
             channel = payload['event']['channel']
             text = payload['event']['text']
             bot.send_response(channel, text)
 
-            return 'ok'
+        return 'ok'
 
     return app
 
