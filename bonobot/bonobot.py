@@ -17,8 +17,8 @@ def slack_request(resource, **params):
     return resp.json()
 
 def bot_request(resource, **data):
-    data['token'] = BOT_TOKEN
-    requests.post('https://slack.com/api/' + resource, json=data)
+    headers = {'Authorization': 'Bearer ' + BOT_TOKEN}
+    requests.post('https://slack.com/api/' + resource, json=data, headers=headers)
 
 def get_channel():
     channels = slack_request('conversations.list')['channels']
