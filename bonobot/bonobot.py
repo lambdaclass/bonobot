@@ -50,5 +50,5 @@ def get_random_bono():
     return random.choice(messages)
 
 def send_response(channel, text):
-    bot_request(channel=channel, text=text,
+    bot_request('chat.postMessage', channel=channel, text=text,
                 as_user=False, icon_emoji=':bono3:', username='BonoBot')
