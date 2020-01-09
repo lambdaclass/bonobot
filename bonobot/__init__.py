@@ -3,12 +3,18 @@ from flask import Flask, request
 
 import bonobot.bonobot as bonobot
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
 def make_app():
     app = Flask(__name__)
 
     @app.route('/bonobot',  methods=['POST'])
     def bonobot_mention():
-        payload = request.json
+        payload = request.get_json(force=True)
+        logging.info("RECEIVED REQUEST %s", payload)
+
         if payload['type'] == 'url_verification':
             return {'challenge': payload['challenge']}
 
