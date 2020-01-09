@@ -6,13 +6,19 @@ import os
 import random
 
 TOKEN = os.environ.get('SLACK_TOKEN')
-if not TOKEN:
+BOT_TOKEN = os.environ.get('SLACK_BOT_TOKEN')
+
+if not TOKEN or not BOT_TOKEN:
     raise Exception('SLACK_TOKEN not set')
 
 def slack_request(resource, **params):
     params['token'] = TOKEN
     resp = requests.get('https://slack.com/api/' + resource, params=params)
     return resp.json()
+
+def bot_request(resource, **data):
+    data['token'] = BOT_TOKEN
+    requests.post('https://slack.com/api/' + resource, json=data)
 
 def get_channel():
     channels = slack_request('conversations.list')['channels']
@@ -42,3 +48,7 @@ def get_random_bono():
     ch = get_channel()
     messages = get_messages(ch)
     return random.choice(messages)
+
+def send_response(channel, text):
+    bot_request(channel=channel, text=text,
+                as_user=False, icon_emoji=':bono3:', username='BonoBot')

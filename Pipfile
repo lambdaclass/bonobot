@@ -8,6 +8,9 @@ ipython = "*"
 
 [packages]
 requests = "*"
+flask = "*"
+gunicorn = "*"
+
 
 [requires]
 python_version = "3.7"
