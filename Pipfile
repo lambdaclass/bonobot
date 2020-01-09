@@ -10,7 +10,7 @@ ipython = "*"
 requests = "*"
 flask = "*"
 gunicorn = "*"
-
+cachetools = "*"
 
 [requires]
 python_version = "3.7"
