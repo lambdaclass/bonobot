@@ -15,7 +15,10 @@ BOTS = {
                     bot_token=os.environ.get('BONO_BOT_TOKEN')),
     'pollo': FileBot(token=os.environ.get('POLLO_BOT_TOKEN'),
                      icon_emoji=':pollobot:', username='PolloBot',
-                     source_file='pollo.txt')
+                     source_file='pollo.txt'),
+    'peron': FileBot(token=os.environ.get('POCHO_BOT_TOKEN'),
+                     icon_emoji=':pochobot:', username='PochoBot',
+                     source_file='pocho.txt')
 }
 
 def make_app():
@@ -31,7 +34,7 @@ def make_app():
             return {'challenge': payload['challenge']}
 
         if (payload['event']['type'] == 'app_mention' or
-            (payload['event']['type'] == 'message' and 'bono' in payload['event']['text'])):
+            (payload['event']['type'] == 'message' and botname in payload['event']['text'])):
             channel = payload['event']['channel']
             text = payload['event']['text']
             bot.send_response(channel, text)
