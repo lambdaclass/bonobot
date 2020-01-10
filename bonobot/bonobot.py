@@ -1,7 +1,3 @@
-"""
-Requires SLACK_TOKEN to be set in the environment
-"""
-
 import random
 import requests
 from cachetools import cached, TTLCache
