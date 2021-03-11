@@ -8,8 +8,7 @@ from bonobot.basebot import BaseBot
 
 def is_bono_message(msg):
     return ('attachments' in msg and
-            msg['attachments'][0].get('text') and
-            msg['attachments'][0].get('author_name') == 'bono')
+            msg['attachments'][0].get('text'))
 
 
 class BonoBot(BaseBot):
