@@ -1,3 +1,4 @@
+import logging
 import os
 
 import requests
@@ -6,13 +7,15 @@ from flask import Flask, request
 from bonobot.basebot import FileBot
 from bonobot.bonobot import BonoBot
 
-import logging
-
 logging.basicConfig(level=logging.DEBUG)
 
 BOTS = {
     'bono': BonoBot(api_token=os.environ.get('BONO_API_TOKEN'),
                     bot_token=os.environ.get('BONO_BOT_TOKEN')),
+    'lambda': BonoBot(api_token=os.environ.get('LAMBDA_API_TOKEN'),
+                      bot_token=os.environ.get('LAMBDA_BOT_TOKEN'),
+                      channel='out_of_context_lambda', emoji=':lambda:',
+                      username='LambdaBot'),
     'pollo': FileBot(token=os.environ.get('POLLO_BOT_TOKEN'),
                      icon_emoji=':pollobot:', username='PolloBot',
                      source_file='pollo.txt'),
@@ -20,6 +23,7 @@ BOTS = {
                      icon_emoji=':pochobot:', username='PochoBot',
                      source_file='pocho.txt')
 }
+
 
 def make_app():
     app = Flask(__name__)
@@ -34,7 +38,7 @@ def make_app():
             return {'challenge': payload['challenge']}
 
         if (payload['event']['type'] == 'app_mention' or
-            (payload['event']['type'] == 'message' and botname in payload['event']['text'])):
+                (payload['event']['type'] == 'message' and botname in payload['event']['text'])):
             channel = payload['event']['channel']
             text = payload['event']['text']
             bot.send_response(channel, text)
