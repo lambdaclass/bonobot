@@ -4,19 +4,18 @@ import os
 import requests
 from flask import Flask, request
 
-from bonobot.basebot import FileBot
+from bonobot.basebot import FileBot, InchequeableBot
 from bonobot.sharebot import ShareBot
 
 logging.basicConfig(level=logging.DEBUG)
 
-# TODO add an inchequeable reaction bot
 # TODO add a diego bot
-# TODO add pelito bot
 BOTS = [ShareBot('bono', channel='out_of_context_bono', emoji=':bono3:', username='BonoBot'),
         ShareBot('lambdabot', channel='out_of_context_lambda', emoji=':lambda:', username='LambdaBot'),
         ShareBot('pelito', channel='out_of_context_lambda', emoji=':pelito:', username='PelitoBot', filter_author='Mario Rugiero'),
         FileBot('pollo', icon_emoji=':pollobot:', username='PolloBot', source_file='pollo.txt'),
-        FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt')]
+        FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt'),
+        InchequeableBot()]
 
 
 def make_app():

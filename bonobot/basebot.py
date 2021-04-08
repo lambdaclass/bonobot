@@ -19,12 +19,12 @@ class BaseBot():
         self.icon_emoji = icon_emoji
         self.username = username
 
-    def is_relevant(self, type, text, **kwargs):
+    def is_relevant(self, type, text='', **kwargs):
         if type == 'app_mention':
             return True
-
-        words = re.sub('['+string.punctuation+']', '', text.lower()).split()
-        return bool(set(words) & set(self.names))
+        elif type == 'message':
+            words = re.sub('['+string.punctuation+']', '', text.lower()).split()
+            return bool(set(words) & set(self.names))
 
     def send_response(self, channel, text, **kwargs):
         response = self.get_message(text)
@@ -49,3 +49,24 @@ class FileBot(BaseBot):
 
     def get_message(self, _text):
         return random.choice(self.messages)
+
+class InchequeableBot(BaseBot):
+    def __init__(self):
+        super().__init__('inchequeable', ':inchequeable:', 'SlackBot')
+
+        with open('inchequeable.txt') as f:
+            self.triggers = f.read().splitlines()
+
+    def is_relevant(self, type, **kwargs):
+        if type == 'message':
+            text = kwargs['text'].lower()
+            return any([line.lower() in text for line in self.triggers])
+        elif type == 'reaction_added':
+            return kwargs['reaction'] == 'inchequeable'
+
+    def send_response(self, type, **kwargs):
+        if type == 'message':
+            source = kwargs
+        elif type == 'reaction_added':
+            source = kwargs['item']
+        self._bot_request('reactions.add', channel=source['channel'], timestamp=source['ts'], name='inchequeable')
