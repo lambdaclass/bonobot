@@ -23,7 +23,7 @@ def make_app():
     @app.route('/slackbot/bot', methods=['POST'])
     def bonobot_mention():
         payload = request.get_json(force=True)
-        logging.info("RECEIVED REQUEST %s %s", payload)
+        logging.info("RECEIVED REQUEST %s", payload)
 
         if payload['type'] == 'url_verification':
             return {'challenge': payload['challenge']}
