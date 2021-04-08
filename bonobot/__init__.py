@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # TODO add an inchequeable reaction bot
 # TODO add a diego bot
+# TODO add pelito bot
 BOTS = [ShareBot('bono', channel='out_of_context_bono', emoji=':bono3:', username='BonoBot'),
         ShareBot('lambdabot', channel='out_of_context_lambda', emoji=':lambda:', username='LambdaBot'),
         FileBot('pollo', icon_emoji=':pollobot:', username='PolloBot', source_file='pollo.txt'),
@@ -30,6 +31,7 @@ def make_app():
 
         for bot in BOTS:
             # FIXME add an should_respond method
+            # TODO support multiple reaction triggers (not just one name)
             if (payload['event']['type'] == 'app_mention' or
                     (payload['event']['type'] == 'message' and bot.name in payload['event']['text'])):
                 channel = payload['event']['channel']
