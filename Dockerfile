@@ -1,13 +1,10 @@
 FROM python:3.7
 
-RUN pip3 install pipenv
-
 WORKDIR /usr/src/app
 
-COPY Pipfile ./
-COPY Pipfile.lock ./
+COPY requirements.txt ./
 
-RUN set -ex && pipenv install --deploy --system
+RUN set -ex && pip install -r requirements.txt
 
 COPY . .
 
