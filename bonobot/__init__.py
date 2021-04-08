@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 BOTS = [ShareBot('bono', channel='out_of_context_bono', emoji=':bono3:', username='BonoBot'),
         ShareBot('lambdabot', channel='out_of_context_lambda', emoji=':lambda:', username='LambdaBot'),
         FileBot('pollo', icon_emoji=':pollobot:', username='PolloBot', source_file='pollo.txt'),
-        FileBot('peron', icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt')]
+        FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt')]
 
 
 def make_app():
@@ -29,14 +29,10 @@ def make_app():
         if payload['type'] == 'url_verification':
             return {'challenge': payload['challenge']}
 
+        event = payload['event']
         for bot in BOTS:
-            # FIXME add an should_respond method
-            # TODO support multiple reaction triggers (not just one name)
-            if (payload['event']['type'] == 'app_mention' or
-                    (payload['event']['type'] == 'message' and bot.name in payload['event']['text'])):
-                channel = payload['event']['channel']
-                text = payload['event']['text']
-                bot.send_response(channel, text)
+            if bot.is_relevant(**event):
+                bot.send_response(**event)
 
         return 'ok'
 
