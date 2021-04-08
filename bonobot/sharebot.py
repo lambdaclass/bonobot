@@ -11,12 +11,10 @@ def is_bono_message(msg):
             msg['attachments'][0].get('text'))
 
 
-class BonoBot(BaseBot):
-    def __init__(self, api_token, bot_token, channel='out_of_context_bono', emoji=':bono3:',
-                 username='BonoBot'):
-        self.api_token = api_token
+class ShareBot(BaseBot):
+    def __init__(self, name, channel, emoji, username):
+        super().__init__(name, emoji, username)
         self.channel_id = self.get_channel_id(channel)['id']
-        super().__init__(bot_token, icon_emoji=emoji, username=username)
 
     def get_message(self, _text):
         messages = self.get_messages()
