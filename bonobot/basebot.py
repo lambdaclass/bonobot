@@ -57,9 +57,8 @@ class InchequeableBot(BaseBot):
         with open('inchequeable.txt') as f:
             self.triggers = f.read().splitlines()
 
-    def is_relevant(self, type, **kwargs):
+    def is_relevant(self, type, text='', **kwargs):
         if type == 'message':
-            text = kwargs['text'].lower()
             return any([line.lower() in text for line in self.triggers])
         elif type == 'reaction_added':
             return kwargs['reaction'] == 'inchequeable'
