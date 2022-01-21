@@ -15,7 +15,7 @@ BOTS = [ShareBot('bono', channel='out_of_context_bono', emoji=':bono3:', usernam
         ShareBot('pelito', channel='out_of_context_lambda', emoji=':pelito:', username='PelitoBot', filter_author='Mario Rugiero'),
         FileBot('pollo', icon_emoji=':pollobot:', username='PolloBot', source_file='pollo.txt'),
         FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt'),
-        FileBot('diego', icon_emoji=':diego-happy:', username="DiegoBot", source_file='dieguito.txt'),
+        FileBot('diego', icon_emoji=':lastima-no:', username="DiegoBot", source_file='diego.txt'),
         InchequeableBot()]
 
 
