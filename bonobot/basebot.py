@@ -59,7 +59,8 @@ class InchequeableBot(BaseBot):
 
     def is_relevant(self, type, text='', **kwargs):
         if type == 'message':
-            return any([line.lower() in text for line in self.triggers])
+			lowcase_text = text.lower()
+            return any([line.lower() in lowcase_text for line in self.triggers])
         elif type == 'reaction_added':
             return kwargs['reaction'] == 'inchequeable'
 
