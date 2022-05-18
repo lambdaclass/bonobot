@@ -5,7 +5,7 @@ import requests
 from flask import Flask, request
 
 from bonobot.basebot import FileBot, InchequeableBot
-from bonobot.sharebot import ShareBot
+from bonobot.sharebot import ShareBot, HaikuBot
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -17,6 +17,7 @@ BOTS = [ShareBot('bono', channel='out_of_context_bono', emoji=':bono3:', usernam
         FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt'),
         FileBot('diego', icon_emoji=':lastima-no:', username="DiegoBot", source_file='diego.txt'),
         FileBot('moria', icon_emoji=':moria:', username="MoriaBot", source_file='moria.txt'),
+        HaikuBot("haiku", ["java", "random", "economia"], ":basho:", "HaikuBot", limit=1000),
         InchequeableBot()]
 
 
