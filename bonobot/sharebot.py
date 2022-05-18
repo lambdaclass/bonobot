@@ -1,3 +1,4 @@
+import logging
 import os
 import random
 import re
@@ -77,6 +78,7 @@ class HaikuBot(BaseBot):
                     break
                 cursor = resp['response_metadata'].get('next_cursor')
 
+            logging.info("Saved %s phrases for channel %s", len(phrases), channel)
             results.update(phrases)
         return list(results)
 
