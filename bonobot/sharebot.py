@@ -57,7 +57,7 @@ class HaikuBot(BaseBot):
         channels = slack_request('conversations.list')['channels']
         return [ch for ch in channels if ch['name'] == channel_name][0]['id']
 
-    @cached(cache=TTLCache(maxsize=1, ttl=3600))
+    @cached(cache=TTLCache(maxsize=1, ttl=36000))
     def get_phrases(self):
         """
         Parse a list of unique short phrases out of slack messages from the
