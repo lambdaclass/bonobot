@@ -41,10 +41,14 @@ class ShareBot(BaseBot):
 
 
 class HaikuBot(BaseBot):
-    def __init__(self, name, channels, emoji, username, limit=1000):
+    def __init__(self, name, channels, emoji, username):
+        """
+        channels is a channel name -> max phrases dict, used to control the amount
+        of phrases to consider per each of the channels loaded.
+        """
         super().__init__(name, emoji, username)
-        self.channels = [self.get_channel_id(ch) for ch in channels]
-        self.limit = limit
+        self.channels = [(self.get_channel_id(ch), limit)
+                         for ch, limit in channels.items()]
 
     def get_message(self, _text):
         phrases = self.get_phrases()
@@ -59,42 +63,37 @@ class HaikuBot(BaseBot):
 
     @cached(cache=TTLCache(maxsize=1, ttl=36000))
     def get_phrases(self):
-        """
-        Parse a list of unique short phrases out of slack messages from the
-        configured channels.
-        """
         results = set()
-        for message in self.get_messages():
-            # remove :emojis:
-            message = re.sub(":[^\s]+:", "", message)
-            phrases = message.split('\n')
-            for phrase in phrases:
-                phrase = phrase.strip()
-                if '//' in phrase or '<' in phrase:
-                    # no links, no mentions
-                    continue
-                elif 1 < len(phrase.split(' ')) < 8:
-                    results.add(phrase)
-
-        return list(results)
-
-    def get_messages(self):
-        "Fetch a list of up to `self.limit` messages from each channel in `self.channels`"
-        result = []
-        for channel in self.channels:
-            messages = []
+        for channel, channel_limit in self.channels:
+            phrases = set()
             cursor = None
             while True:
                 resp = slack_request('conversations.history',
-                                     channel=channel, cursor=cursor)
-                messages += [msg['text'] for msg in resp['messages']]
+                                     channel=channel, cursor=cursor, limit=200)
+                phrases.update(*[self.parse_phrases(msg['text'])
+                                 for msg in resp['messages']])
 
-                if not resp['has_more'] or len(messages) > self.limit:
+                if not resp['has_more'] or len(phrases) > channel_limit:
                     break
                 cursor = resp['response_metadata'].get('next_cursor')
 
-            result += messages
-        return result
+            results.update(phrases)
+        return list(results)
+
+    def parse_phrases(self, message):
+        # remove :emojis:
+        message = re.sub(":[^\s]+:", "", message)
+        phrases = message.split('\n')
+        results = []
+        for phrase in phrases:
+            phrase = phrase.strip()
+            if '//' in phrase or '<' in phrase:
+                # no links, no mentions
+                continue
+            elif 1 < len(phrase.split(' ')) < 8:
+                results.append(phrase)
+
+        return results
 
 
 def is_share_message(msg, expected_author):
