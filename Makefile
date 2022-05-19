@@ -4,6 +4,8 @@ build:
 	@python -m venv venv && . venv/bin/activate && \
 	pip install -r requirements.txt && pip install -r dev-requirements.txt
 
+# Build and push to a docker registry, e.g.
+#   make push REGISTRY=registry.example.com
 push:
 	docker build -t bonobot . && \
 	docker login ${REGISTRY} && \
