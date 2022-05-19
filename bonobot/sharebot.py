@@ -8,20 +8,18 @@ from cachetools import TTLCache, cached
 
 from bonobot.basebot import BaseBot
 
+# TODO merge this and the base bot module
+
 
 class ShareBot(BaseBot):
     def __init__(self, name, channel, emoji, username, filter_author=None):
         super().__init__(name, emoji, username)
-        self.channel_id = self.get_channel_id(channel)['id']
+        self.channel_id = slack_channel_id(channel)
         self.filter_author = filter_author
 
     def get_message(self, _text):
         messages = self.get_messages()
         return random.choice(messages)
-
-    def get_channel_id(self, channel_name):
-        channels = slack_request('conversations.list')['channels']
-        return [ch for ch in channels if ch['name'] == channel_name][0]
 
     @cached(cache=TTLCache(maxsize=1, ttl=3600))
     def get_messages(self):
@@ -48,7 +46,7 @@ class HaikuBot(BaseBot):
         of phrases to consider per each of the channels loaded.
         """
         super().__init__(name, emoji, username)
-        self.channels = [(self.get_channel_id(ch), limit)
+        self.channels = [(slack_channel_id(ch), limit)
                          for ch, limit in channels.items()]
 
     def get_message(self, _text):
@@ -57,10 +55,6 @@ class HaikuBot(BaseBot):
         return '\n'.join([random.choice(phrases),
                           random.choice(phrases),
                           random.choice(phrases)])
-
-    def get_channel_id(self, channel_name):
-        channels = slack_request('conversations.list')['channels']
-        return [ch for ch in channels if ch['name'] == channel_name][0]['id']
 
     @cached(cache=TTLCache(maxsize=1, ttl=36000))
     def get_phrases(self):
@@ -96,6 +90,12 @@ class HaikuBot(BaseBot):
                 results.append(phrase)
 
         return results
+
+
+# TODO move to a slack api module
+def slack_channel_id(channel_name):
+    channels = slack_request('conversations.list')['channels']
+    return [ch for ch in channels if ch['name'] == channel_name][0]['id']
 
 
 def is_share_message(msg, expected_author):

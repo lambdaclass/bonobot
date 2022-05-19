@@ -1,9 +1,9 @@
 import os
 import random
-
-import requests
 import re
 import string
+
+import requests
 
 
 class BaseBot():
@@ -14,6 +14,7 @@ class BaseBot():
         elif isinstance(name, list):
             self.names = [name.lower() for name in name]
 
+        # TODO move to slack helper module
         self.api_token = os.environ.get('SLACK_API_TOKEN')
         self.bot_token = os.environ.get('SLACK_BOT_TOKEN')
         self.icon_emoji = icon_emoji
@@ -23,7 +24,7 @@ class BaseBot():
         if type == 'app_mention':
             return True
         elif type == 'message':
-            words = re.sub('['+string.punctuation+']', '', text.lower()).split()
+            words = re.sub('[' + string.punctuation + ']', '', text.lower()).split()
             return bool(set(words) & set(self.names))
 
     def send_response(self, channel, text, **kwargs):
@@ -34,6 +35,7 @@ class BaseBot():
     def get_message(self, _text):
         raise NotImplementedError
 
+    # TODO move to slack helper module
     def _bot_request(self, resource, **data):
         headers = {'Authorization': 'Bearer ' + self.bot_token}
         requests.post('https://slack.com/api/' + resource,
@@ -49,6 +51,7 @@ class FileBot(BaseBot):
 
     def get_message(self, _text):
         return random.choice(self.messages)
+
 
 class InchequeableBot(BaseBot):
     def __init__(self):
