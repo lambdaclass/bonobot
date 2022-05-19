@@ -37,6 +37,8 @@ class BaseBot():
 
 
 class FileBot(BaseBot):
+    "When mentioned, Replies with a random message from an input text file."
+
     def __init__(self, name, icon_emoji, username, source_file):
         super().__init__(name, icon_emoji, username)
 
@@ -48,6 +50,11 @@ class FileBot(BaseBot):
 
 
 class InchequeableBot(BaseBot):
+    """
+    Adds an :inchequeable: emoji reaction to any message that contains any of the trigger phrases
+    from the input text file. Also adds +1 to any :inchequeable: reaction from another user.
+    """
+
     def __init__(self):
         super().__init__('inchequeable', ':inchequeable:', 'SlackBot')
 
@@ -70,6 +77,8 @@ class InchequeableBot(BaseBot):
 
 
 class ShareBot(BaseBot):
+    "When mentioned, replies with a random message taken from the messages shared to a given channel."
+
     def __init__(self, name, channel, emoji, username, filter_author=None):
         super().__init__(name, emoji, username)
         self.channel_id = slack.channel_id(channel)
@@ -98,6 +107,8 @@ class ShareBot(BaseBot):
 
 
 class HaikuBot(BaseBot):
+    "When mentioned, replies with 3-line haikus from phrases found in the given channels."
+
     def __init__(self, name, channels, emoji, username):
         """
         channels is a channel name -> max phrases dict, used to control the amount
