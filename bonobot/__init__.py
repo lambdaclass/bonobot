@@ -5,11 +5,10 @@ import requests
 from flask import Flask, request
 
 from bonobot.basebot import FileBot, InchequeableBot
-from bonobot.sharebot import ShareBot, HaikuBot
+from bonobot.sharebot import HaikuBot, ShareBot
 
 logging.basicConfig(level=logging.DEBUG)
 
-# TODO add a diego bot
 BOTS = [ShareBot('bono', channel='out_of_context_bono', emoji=':bono3:', username='BonoBot'),
         ShareBot('lambda', channel='out_of_context_lambda', emoji=':lambda:', username='LambdaBot'),
         ShareBot('pelito', channel='out_of_context_lambda', emoji=':pelito:', username='PelitoBot', filter_author='Mario Rugiero'),
