@@ -1,9 +1,8 @@
-import os
 import random
 import re
 import string
 
-import requests
+import bonobot.slack as slack
 
 
 class BaseBot():
@@ -14,9 +13,6 @@ class BaseBot():
         elif isinstance(name, list):
             self.names = [name.lower() for name in name]
 
-        # TODO move to slack helper module
-        self.api_token = os.environ.get('SLACK_API_TOKEN')
-        self.bot_token = os.environ.get('SLACK_BOT_TOKEN')
         self.icon_emoji = icon_emoji
         self.username = username
 
@@ -29,17 +25,11 @@ class BaseBot():
 
     def send_response(self, channel, text, **kwargs):
         response = self.get_message(text)
-        self._bot_request('chat.postMessage', channel=channel, text=response,
+        slack.bot_request('chat.postMessage', channel=channel, text=response,
                           as_user=False, icon_emoji=self.icon_emoji, username=self.username)
 
     def get_message(self, _text):
         raise NotImplementedError
-
-    # TODO move to slack helper module
-    def _bot_request(self, resource, **data):
-        headers = {'Authorization': 'Bearer ' + self.bot_token}
-        requests.post('https://slack.com/api/' + resource,
-                      json=data, headers=headers)
 
 
 class FileBot(BaseBot):
@@ -72,4 +62,4 @@ class InchequeableBot(BaseBot):
             source = kwargs
         elif type == 'reaction_added':
             source = kwargs['item']
-        self._bot_request('reactions.add', channel=source['channel'], timestamp=source['ts'], name='inchequeable')
+        slack.bot_request('reactions.add', channel=source['channel'], timestamp=source['ts'], name='inchequeable')

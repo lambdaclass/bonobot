@@ -3,9 +3,9 @@ import os
 import random
 import re
 
-import requests
 from cachetools import TTLCache, cached
 
+import bonobot.slack as slack
 from bonobot.basebot import BaseBot
 
 # TODO merge this and the base bot module
@@ -14,7 +14,7 @@ from bonobot.basebot import BaseBot
 class ShareBot(BaseBot):
     def __init__(self, name, channel, emoji, username, filter_author=None):
         super().__init__(name, emoji, username)
-        self.channel_id = slack_channel_id(channel)
+        self.channel_id = slack.channel_id(channel)
         self.filter_author = filter_author
 
     def get_message(self, _text):
@@ -26,8 +26,8 @@ class ShareBot(BaseBot):
         messages = []
         cursor = None
         while True:
-            resp = slack_request('conversations.history',
-                                 channel=self.channel_id, cursor=cursor)
+            resp = slack.api_request('conversations.history',
+                                     channel=self.channel_id, cursor=cursor)
             messages += [msg['attachments'][0]['text']
                          for msg in resp['messages']
                          if is_share_message(msg, self.filter_author)]
@@ -46,7 +46,7 @@ class HaikuBot(BaseBot):
         of phrases to consider per each of the channels loaded.
         """
         super().__init__(name, emoji, username)
-        self.channels = [(slack_channel_id(ch), limit)
+        self.channels = [(slack.channel_id(ch), limit)
                          for ch, limit in channels.items()]
 
     def get_message(self, _text):
@@ -63,8 +63,8 @@ class HaikuBot(BaseBot):
             phrases = set()
             cursor = None
             while True:
-                resp = slack_request('conversations.history',
-                                     channel=channel, cursor=cursor, limit=200)
+                resp = slack.api_request('conversations.history',
+                                         channel=channel, cursor=cursor, limit=200)
                 phrases.update(*[self.parse_phrases(msg['text'])
                                  for msg in resp['messages']])
 
@@ -90,24 +90,3 @@ class HaikuBot(BaseBot):
                 results.append(phrase)
 
         return results
-
-
-# TODO move to a slack api module
-def slack_channel_id(channel_name):
-    channels = slack_request('conversations.list')['channels']
-    return [ch for ch in channels if ch['name'] == channel_name][0]['id']
-
-
-def is_share_message(msg, expected_author):
-    if not 'attachments' in msg:
-        return False
-
-    text = msg['attachments'][0].get('text')
-    author = msg['attachments'][0].get('author_name', '')
-    return text and (not expected_author or expected_author.lower() == author.lower())
-
-
-def slack_request(resource, **params):
-    params['token'] = os.environ.get('SLACK_API_TOKEN')
-    resp = requests.get('https://slack.com/api/' + resource, params=params)
-    return resp.json()
