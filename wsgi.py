@@ -1,3 +1,3 @@
-from bonobot import make_app
+from bonobot.app import make_app
 
 app = make_app()
