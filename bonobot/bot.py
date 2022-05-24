@@ -102,7 +102,7 @@ class ShareBot(BaseBot):
                                          channel=channel_id, cursor=cursor)
                 messages += [msg['attachments'][0]['text']
                              for msg in resp['messages']
-                             if is_share_message(msg, self.filter_author)]
+                             if slack.is_share_message(msg, self.filter_author)]
 
                 if not resp['has_more']:
                     break
