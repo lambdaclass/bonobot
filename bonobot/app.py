@@ -8,10 +8,9 @@ from bonobot.bot import FileBot, HaikuBot, InchequeableBot, ShareBot
 
 logging.basicConfig(level=logging.DEBUG)
 
-BOTS = [ShareBot('bono', channel='out_of_context_bono', emoji=':bono3:', username='BonoBot'),
-        ShareBot('lambda', channel='out_of_context_lambda', emoji=':lambda:', username='LambdaBot'),
-        # FIXME pelito bot should pick up OOC pelito channel in addition to lambda
-        ShareBot('pelito', channel='out_of_context_lambda', emoji=':pelito:', username='PelitoBot', filter_author='Mario Rugiero'),
+BOTS = [ShareBot('bono', channels=['out_of_context_bono'], emoji=':bono3:', username='BonoBot'),
+        ShareBot('lambda', channels=['out_of_context_lambda'], emoji=':lambda:', username='LambdaBot'),
+        ShareBot('pelito', channels=['out_of_context_lambda', 'out_of_context_pelito'], emoji=':pelito:', username='PelitoBot', filter_author='Mario Rugiero'),
         FileBot('pollo', icon_emoji=':pollobot:', username='PolloBot', source_file='pollo.txt'),
         FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt'),
         FileBot('diego', icon_emoji=':lastima-no:', username="DiegoBot", source_file='diego.txt'),
