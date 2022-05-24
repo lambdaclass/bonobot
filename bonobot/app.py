@@ -10,6 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 BOTS = [ShareBot('bono', channel='out_of_context_bono', emoji=':bono3:', username='BonoBot'),
         ShareBot('lambda', channel='out_of_context_lambda', emoji=':lambda:', username='LambdaBot'),
+        # FIXME pelito bot should pick up OOC pelito channel in addition to lambda
         ShareBot('pelito', channel='out_of_context_lambda', emoji=':pelito:', username='PelitoBot', filter_author='Mario Rugiero'),
         FileBot('pollo', icon_emoji=':pollobot:', username='PolloBot', source_file='pollo.txt'),
         FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt'),
@@ -32,8 +33,7 @@ def make_app():
 
         event = payload['event']
         for bot in BOTS:
-            if bot.is_relevant(**event):
-                bot.send_response(**event)
+            bot.maybe_send_response(**event)
 
         return 'ok'
 

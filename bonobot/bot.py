@@ -20,6 +20,10 @@ class BaseBot():
         self.icon_emoji = icon_emoji
         self.username = username
 
+    def maybe_send_response(self, **event):
+        if self.is_relevant(**event):
+            self.send_response(**event)
+
     def is_relevant(self, type, text='', **kwargs):
         if type == 'app_mention':
             return True
