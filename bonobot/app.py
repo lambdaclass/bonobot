@@ -8,14 +8,14 @@ from bonobot.bot import FileBot, HaikuBot, InchequeableBot, ShareBot
 
 logging.basicConfig(level=logging.DEBUG)
 
-BOTS = [ShareBot('bono', channel='out_of_context_bono', emoji=':bono3:', username='BonoBot'),
-        ShareBot('lambda', channel='out_of_context_lambda', emoji=':lambda:', username='LambdaBot'),
-        ShareBot('pelito', channel='out_of_context_lambda', emoji=':pelito:', username='PelitoBot', filter_author='Mario Rugiero'),
+BOTS = [ShareBot('bono', channels=['out_of_context_bono'], emoji=':bono3:', username='BonoBot'),
+        ShareBot('lambda', channels=['out_of_context_lambda'], emoji=':lambda:', username='LambdaBot'),
+        ShareBot('pelito', channels=['out_of_context_lambda', 'out_of_context_pelito'], emoji=':pelito:', username='PelitoBot', filter_author='Mario Rugiero'),
         FileBot('pollo', icon_emoji=':pollobot:', username='PolloBot', source_file='pollo.txt'),
         FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt'),
         FileBot('diego', icon_emoji=':lastima-no:', username="DiegoBot", source_file='diego.txt'),
         FileBot('moria', icon_emoji=':moria:', username="MoriaBot", source_file='moria.txt'),
-        HaikuBot("haiku", {"java": 300, "random": 1500, "economia": 200}, ":basho:", "HaikuBot"),
+        HaikuBot("haiku", {"java": 600, "random": 3000, "economia": 400, "adroll": 400}, ":basho:", "HaikuBot"),
         InchequeableBot()]
 
 
@@ -32,8 +32,7 @@ def make_app():
 
         event = payload['event']
         for bot in BOTS:
-            if bot.is_relevant(**event):
-                bot.send_response(**event)
+            bot.maybe_send_response(**event)
 
         return 'ok'
 

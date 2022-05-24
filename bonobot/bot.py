@@ -20,6 +20,10 @@ class BaseBot():
         self.icon_emoji = icon_emoji
         self.username = username
 
+    def maybe_send_response(self, **event):
+        if self.is_relevant(**event):
+            self.send_response(**event)
+
     def is_relevant(self, type, text='', **kwargs):
         if type == 'app_mention':
             return True
@@ -79,9 +83,9 @@ class InchequeableBot(BaseBot):
 class ShareBot(BaseBot):
     "When mentioned, replies with a random message taken from the messages shared to a given channel."
 
-    def __init__(self, name, channel, emoji, username, filter_author=None):
+    def __init__(self, name, channels, emoji, username, filter_author=None):
         super().__init__(name, emoji, username)
-        self.channel_id = slack.channel_id(channel)
+        self.channel_ids = [slack.channel_id(channel) for channel in channels]
         self.filter_author = filter_author
 
     def get_message(self, _text):
@@ -92,16 +96,17 @@ class ShareBot(BaseBot):
     def get_messages(self):
         messages = []
         cursor = None
-        while True:
-            resp = slack.api_request('conversations.history',
-                                     channel=self.channel_id, cursor=cursor)
-            messages += [msg['attachments'][0]['text']
-                         for msg in resp['messages']
-                         if is_share_message(msg, self.filter_author)]
+        for channel_id in self.channel_ids:
+            while True:
+                resp = slack.api_request('conversations.history',
+                                         channel=channel_id, cursor=cursor)
+                messages += [msg['attachments'][0]['text']
+                             for msg in resp['messages']
+                             if slack.is_share_message(msg, self.filter_author)]
 
-            if not resp['has_more']:
-                break
-            cursor = resp['response_metadata']['next_cursor']
+                if not resp['has_more']:
+                    break
+                cursor = resp['response_metadata']['next_cursor']
 
         return messages
 
