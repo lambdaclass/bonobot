@@ -10,6 +10,13 @@ logging.basicConfig(level=logging.DEBUG)
 
 BOTS = [
     ShareBot(
+        "juani",
+        channels=["out_of_context_lambda", "out_of_context_juani"],
+        emoji=":javajuani:",
+        username="JuaniBot",
+        filter_author="Juan Rigada",
+    ),
+    ShareBot(
         "bono", channels=["out_of_context_bono"], emoji=":bono3:", username="BonoBot"
     ),
     ShareBot(
