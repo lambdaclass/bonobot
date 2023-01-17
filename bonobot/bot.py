@@ -61,7 +61,7 @@ class ReactionBot(BaseBot):
 
     def __init__(self, name, icon_emoji, username, source_file):
         super().__init__(name, icon_emoji, username)
-        self.reaction_name = self.icon_emoji[1:]
+        self.reaction_name = self.icon_emoji.replace(":", "")
 
         with open(source_file) as f:
             self.triggers = f.read().splitlines()
