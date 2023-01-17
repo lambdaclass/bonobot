@@ -53,16 +53,17 @@ class FileBot(BaseBot):
         return random.choice(self.messages)
 
 
-class InchequeableBot(BaseBot):
+class ReactionBot(BaseBot):
     """
-    Adds an :inchequeable: emoji reaction to any message that contains any of the trigger phrases
-    from the input text file. Also adds +1 to any :inchequeable: reaction from another user.
+    Adds an emoji reaction to any message that contains any of the trigger phrases
+    from the input text file. Also adds +1 to any reaction from another user with that emoji.
     """
 
-    def __init__(self):
-        super().__init__('inchequeable', ':inchequeable:', 'SlackBot')
+    def __init__(self, name, icon_emoji, username, source_file):
+        super().__init__(name, icon_emoji, username)
+        self.reaction_name = self.icon_emoji[1:]
 
-        with open('inchequeable.txt') as f:
+        with open(source_file) as f:
             self.triggers = f.read().splitlines()
 
     def is_relevant(self, type, text='', **kwargs):
@@ -70,14 +71,14 @@ class InchequeableBot(BaseBot):
             lowcase_text = text.lower()
             return any([line.lower() in lowcase_text for line in self.triggers])
         elif type == 'reaction_added':
-            return kwargs['reaction'] == 'inchequeable'
+            return kwargs['reaction'] == self.reaction_name
 
     def send_response(self, type, **kwargs):
         if type == 'message':
             source = kwargs
         elif type == 'reaction_added':
             source = kwargs['item']
-        slack.bot_request('reactions.add', channel=source['channel'], timestamp=source['ts'], name='inchequeable')
+        slack.bot_request('reactions.add', channel=source['channel'], timestamp=source['ts'], name=self.reaction_name)
 
 
 class ShareBot(BaseBot):
