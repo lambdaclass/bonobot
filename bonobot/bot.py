@@ -9,7 +9,7 @@ from cachetools import TTLCache, cached
 import bonobot.slack as slack
 
 
-class BaseBot():
+class BaseBot:
     def __init__(self, name, icon_emoji, username):
 
         if isinstance(name, str):
@@ -24,17 +24,22 @@ class BaseBot():
         if self.is_relevant(**event):
             self.send_response(**event)
 
-    def is_relevant(self, type, text='', **kwargs):
-        if type == 'app_mention':
+    def is_relevant(self, type, text="", **kwargs):
+        if type == "app_mention":
             return True
-        elif type == 'message':
-            words = re.sub('[' + string.punctuation + ']', '', text.lower()).split()
+        elif type == "message":
+            words = re.sub("[" + string.punctuation + "]", "", text.lower()).split()
             return bool(set(words) & set(self.names))
 
     def send_response(self, channel, text, **kwargs):
         response = self.get_message(text)
-        slack.bot_request('chat.postMessage', channel=channel, text=response,
-                          as_user=False, icon_emoji=self.icon_emoji, username=self.username)
+        slack.bot_request(
+            "chat.postMessage",
+            channel=channel,
+            text=response,
+            icon_emoji=self.icon_emoji,
+            username=self.username,
+        )
 
     def get_message(self, _text):
         raise NotImplementedError
@@ -66,20 +71,19 @@ class ReactionBot(BaseBot):
         with open(source_file) as f:
             self.triggers = f.read().splitlines()
 
-    def is_relevant(self, type, text='', **kwargs):
-        if type == 'message':
+    def is_relevant(self, type, text="", **kwargs):
+        if type == "message":
             lowcase_text = text.lower()
             return any([line.lower() in lowcase_text for line in self.triggers])
         elif type == 'reaction_added':
             return kwargs['reaction'] == self.reaction_name
 
     def send_response(self, type, **kwargs):
-        if type == 'message':
+        if type == "message":
             source = kwargs
         elif type == 'reaction_added':
             source = kwargs['item']
         slack.bot_request('reactions.add', channel=source['channel'], timestamp=source['ts'], name=self.reaction_name)
-
 
 class ShareBot(BaseBot):
     "When mentioned, replies with a random message taken from the messages shared to a given channel."
@@ -99,15 +103,18 @@ class ShareBot(BaseBot):
         cursor = None
         for channel_id in self.channel_ids:
             while True:
-                resp = slack.api_request('conversations.history',
-                                         channel=channel_id, cursor=cursor)
-                messages += [msg['attachments'][0]['text']
-                             for msg in resp['messages']
-                             if slack.is_share_message(msg, self.filter_author)]
+                resp = slack.api_request(
+                    "conversations.history", channel=channel_id, cursor=cursor
+                )
+                messages += [
+                    msg["attachments"][0]["text"]
+                    for msg in resp["messages"]
+                    if slack.is_share_message(msg, self.filter_author)
+                ]
 
-                if not resp['has_more']:
+                if not resp["has_more"]:
                     break
-                cursor = resp['response_metadata']['next_cursor']
+                cursor = resp["response_metadata"]["next_cursor"]
 
         return messages
 
@@ -121,15 +128,16 @@ class HaikuBot(BaseBot):
         of phrases to consider per each of the channels loaded.
         """
         super().__init__(name, emoji, username)
-        self.channels = [(slack.channel_id(ch), limit)
-                         for ch, limit in channels.items()]
+        self.channels = [
+            (slack.channel_id(ch), limit) for ch, limit in channels.items()
+        ]
 
     def get_message(self, _text):
         phrases = self.get_phrases()
         # builds the haiku out of 3 short phrases
-        return '\n'.join([random.choice(phrases),
-                          random.choice(phrases),
-                          random.choice(phrases)])
+        return "\n".join(
+            [random.choice(phrases), random.choice(phrases), random.choice(phrases)]
+        )
 
     @cached(cache=TTLCache(maxsize=1, ttl=36000))
     def get_phrases(self):
@@ -138,14 +146,16 @@ class HaikuBot(BaseBot):
             phrases = set()
             cursor = None
             while True:
-                resp = slack.api_request('conversations.history',
-                                         channel=channel, cursor=cursor, limit=200)
-                phrases.update(*[self.parse_phrases(msg['text'])
-                                 for msg in resp['messages']])
+                resp = slack.api_request(
+                    "conversations.history", channel=channel, cursor=cursor, limit=200
+                )
+                phrases.update(
+                    *[self.parse_phrases(msg["text"]) for msg in resp["messages"]]
+                )
 
-                if not resp['has_more'] or len(phrases) > channel_limit:
+                if not resp["has_more"] or len(phrases) > channel_limit:
                     break
-                cursor = resp['response_metadata'].get('next_cursor')
+                cursor = resp["response_metadata"].get("next_cursor")
 
             logging.info("Saved %s phrases for channel %s", len(phrases), channel)
             results.update(phrases)
@@ -154,14 +164,14 @@ class HaikuBot(BaseBot):
     def parse_phrases(self, message):
         # remove :emojis:
         message = re.sub(":[^\s]+:", "", message)
-        phrases = message.split('\n')
+        phrases = message.split("\n")
         results = []
         for phrase in phrases:
             phrase = phrase.strip()
-            if '//' in phrase or '<' in phrase:
+            if "//" in phrase or "<" in phrase:
                 # no links, no mentions
                 continue
-            elif 1 < len(phrase.split(' ')) < 8:
+            elif 1 < len(phrase.split(" ")) < 8:
                 results.append(phrase)
 
         return results

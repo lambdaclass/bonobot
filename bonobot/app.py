@@ -20,27 +20,26 @@ BOTS = [ShareBot('bono', channels=['out_of_context_bono'], emoji=':bono3:', user
         ReactionBot('inchequeable', ':inchequeable:', 'InchequeableBot', 'inchequeable.txt'),
         ReactionBot('dalessandro', ':fuera:', 'PibeDaleBot', 'dalessandro.txt')]
 
-
 def make_app():
     app = Flask(__name__)
 
-    @app.route('/slackbot/bot', methods=['POST'])
+    @app.route("/slackbot/bot", methods=["POST"])
     def bonobot_mention():
         payload = request.get_json(force=True)
         logging.info("RECEIVED REQUEST %s", payload)
 
-        if payload['type'] == 'url_verification':
-            return {'challenge': payload['challenge']}
+        if payload["type"] == "url_verification":
+            return {"challenge": payload["challenge"]}
 
-        event = payload['event']
+        event = payload["event"]
         for bot in BOTS:
             bot.maybe_send_response(**event)
 
-        return 'ok'
+        return "ok"
 
     return app
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = make_app()
     app.run(port=800)
