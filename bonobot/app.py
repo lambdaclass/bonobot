@@ -4,7 +4,7 @@ import os
 import requests
 from flask import Flask, request
 
-from bonobot.bot import FileBot, HaikuBot, ReactionBot, ShareBot
+from bonobot.bot import FileBot, HaikuBot, ReactionBot, ShareBot, RandomReactionBot
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -18,7 +18,8 @@ BOTS = [ShareBot('bono', channels=['out_of_context_bono'], emoji=':bono3:', user
         FileBot('moria', icon_emoji=':moria:', username="MoriaBot", source_file='moria.txt'),
         HaikuBot("haiku", {"java": 600, "random": 3000, "economia": 400, "adroll": 400}, ":basho:", "HaikuBot"),
         ReactionBot('inchequeable', ':inchequeable:', 'InchequeableBot', 'inchequeable.txt'),
-        ReactionBot('dalessandro', ':fuera:', 'PibeDaleBot', 'dalessandro.txt')]
+        ReactionBot('dalessandro', ':fuera:', 'PibeDaleBot', 'dalessandro.txt'),
+        RandomReactionBot('chaja', ':chaja:', 'Chaja')]
 
 def make_app():
     app = Flask(__name__)
