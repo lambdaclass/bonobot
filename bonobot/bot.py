@@ -57,6 +57,28 @@ class FileBot(BaseBot):
     def get_message(self, _text):
         return random.choice(self.messages)
 
+class RandomReactionBot(BaseBot):
+    """
+    Adds the given emoji reaction to a random message from the channel.
+    Also adds +1 to any reaction from another user with that emoji.
+    """
+
+    def __init__(self, name, icon_emoji, username):
+        super().__init__(name, icon_emoji, username)
+        self.reaction_name = self.icon_emoji.replace(":", "")
+
+    def is_relevant(self, type, text="", **kwargs):
+        if type == "message":
+            return random.randrange(50) == 25 # 1/50 chance of triggering, 25 is arbitrary
+        elif type == 'reaction_added':
+            return kwargs['reaction'] == self.reaction_name
+
+    def send_response(self, type, **kwargs):
+        if type == "message":
+            source = kwargs
+        elif type == 'reaction_added':
+            source = kwargs['item']
+        slack.bot_request('reactions.add', channel=source['channel'], timestamp=source['ts'], name=self.reaction_name)
 
 class ReactionBot(BaseBot):
     """
