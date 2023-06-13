@@ -15,7 +15,7 @@ BOTS = [ShareBot('bono', channels=['out_of_context_bono'], emoji=':bono3:', user
         FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt'),
         FileBot('diego', icon_emoji=':lastima-no:', username="DiegoBot", source_file='diego.txt'),
         FileBot('moria', icon_emoji=':moria:', username="MoriaBot", source_file='moria.txt'),
-        HaikuBot("haiku", {"java": 600, "random": 3000, "economia": 400, "adroll": 400}, ":basho:", "HaikuBot"),
+        HaikuBot("haiku", {"java": 600, "random_español": 3000, "economia": 400, "adroll": 400}, ":basho:", "HaikuBot"),
         ReactionBot('inchequeable', ':inchequeable:', 'InchequeableBot', 'inchequeable.txt'),
         ReactionBot('dalessandro', ':fuera:', 'PibeDaleBot', 'dalessandro.txt'),
         RandomReactionBot('chaja', ':chaja:', 'Chaja')]
