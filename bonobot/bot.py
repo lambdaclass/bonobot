@@ -157,8 +157,9 @@ class HaikuBot(BaseBot):
     def get_message(self, _text):
         phrases = self.get_phrases()
         # builds the haiku out of 3 short phrases
+        messages = pick_3_messages(phrases)
         return "\n".join(
-            [random.choice(phrases), random.choice(phrases), random.choice(phrases)]
+            [messages[0], messages[1], messages[2]]
         )
 
     @cached(cache=TTLCache(maxsize=1, ttl=36000))
@@ -197,3 +198,17 @@ class HaikuBot(BaseBot):
                 results.append(phrase)
 
         return results
+
+
+    def pick_3_messages(phrases):
+        result = []
+        while len(result) < 3:
+            phrase = random.choice(phrases)
+            if not is_happy_birthday_message(phrase):
+                result.append(phrase)
+        return result
+
+    def is_happy_birthday_message(message: str):
+        # remove happy birthday messages
+        happy_birthday_messages = ["happy birthday", "mcf", "happy bday", "feliz cumple", "felizz cumple", "cumple feliz"]
+        return any([x in message.lower() for x in happy_birthday_messages])
