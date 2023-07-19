@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Make script print every command that is being ran
 set -ex
 
 # Change directory to bot's
