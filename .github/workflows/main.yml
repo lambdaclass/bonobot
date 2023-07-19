@@ -20,9 +20,13 @@ jobs:
         SSH_KEY: ${{ secrets.SSH_KEY }}
       run: |
         set -ex
-        sed -E 's/(-+(BEGIN|END) OPENSSH PRIVATE KEY-+) *| +/\1\n/g' <<< "$SSH_KEY" > id_ed25519_testing
-        chmod 400 id_ed25519_testing
+        sed -E 's/(-+(BEGIN|END) OPENSSH PRIVATE KEY-+) *| +/\1\n/g' <<< "$SSH_KEY" > id_ed25519_bonobot
+        chmod 400 id_ed25519_bonobot
         
     - name: Connect via SSH to server
+      env:
+        SERVER: ${{ secrets.SERVER }}
       run: |
-        ssh -i id_ed25519_testing ${{ secrets.SERVER }} -f "wall test"
+        ssh -i id_ed25519_bonobot $SERVER \
+            -o StrictHostKeyChecking=no \
+            -f "wall test" \
