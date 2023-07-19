@@ -31,4 +31,4 @@ jobs:
       run: |
         ssh -i id_ed25519_bonobot $SERVER \
             -o StrictHostKeyChecking=no \
-            -f "cd /root/bonobot/ && make run" \
+            -f "cd /root/bonobot/ && make run SLACK_API_TOKEN=$SLACK_API_TOKEN SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN" \
