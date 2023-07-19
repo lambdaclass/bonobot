@@ -8,4 +8,4 @@ cd /root/bonobot
 # Update codebase
 git pull
 
-make run SLACK_API_TOKEN=${args[0]} SLACK_BOT_TOKEN=${args[1]}
+make run SLACK_API_TOKEN=$1 SLACK_BOT_TOKEN=$2
