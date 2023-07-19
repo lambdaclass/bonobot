@@ -12,7 +12,12 @@ push:
 	docker tag bonobot:latest ${REGISTRY}/bonobot:latest && \
 	docker push ${REGISTRY}/bonobot:latest
 
-# Run inside docker. Assumes the tokens are set in the host environment
-run:
+run: purge
 	docker build -t bonobot . && \
-	docker run -p 8000 -e SLACK_API_TOKEN -e SLACK_BOT_TOKEN bonobot
+	docker run -d -p 80:8000 -e SLACK_API_TOKEN=${SLACK_API_TOKEN} -e SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN} bot
+
+purge:
+	if [ $(shell docker ps -a | grep 'bot' | cut -d ' ' -f 1 | wc -l) -ne 0 ]; then \
+		docker ps -a | grep bot | cut -d ' ' -f 1 | xargs docker stop ; \
+		docker ps -a | grep bot | cut -d ' ' -f 1 | xargs docker rm ; \
+	fi
