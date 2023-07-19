@@ -29,6 +29,4 @@ jobs:
         SLACK_API_TOKEN: ${{ secrets.SLACK_API_TOKEN }}
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       run: |
-        ssh -i id_ed25519_bonobot $SERVER \
-            -o StrictHostKeyChecking=no \
-            -f "/root/bonobot/deploy.sh $SLACK_API_TOKEN $SLACK_BOT_TOKEN" \
+        ssh -i id_ed25519_bonobot $SERVER -o StrictHostKeyChecking=no -f "/root/bonobot/deploy.sh ${SLACK_API_TOKEN} ${SLACK_BOT_TOKEN}" 
