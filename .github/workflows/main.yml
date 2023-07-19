@@ -22,7 +22,7 @@ jobs:
         set -ex
         sed -E 's/(-+(BEGIN|END) OPENSSH PRIVATE KEY-+) *| +/\1\n/g' <<< "$SSH_KEY" > id_ed25519_bonobot
         chmod 400 id_ed25519_bonobot
-        
+
     - name: Connect via SSH to server
       env:
         SERVER: ${{ secrets.SERVER }}
@@ -31,4 +31,4 @@ jobs:
       run: |
         ssh -i id_ed25519_bonobot $SERVER \
             -o StrictHostKeyChecking=no \
-            -f "cd /root/bonobot/ && make run SLACK_API_TOKEN=$SLACK_API_TOKEN SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN" \
+            -f "/root/bonobot/deploy.sh" \
