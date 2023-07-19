@@ -25,5 +25,4 @@ jobs:
         
     - name: Connect via SSH to server
       run: |
-        # TODO: connect to ssh, pull changes (since action runs when pushed to master), build image, remove prevoius container and run container with the newly created image.
         ssh -i id_ed25519_testing ${{ secrets.SERVER }} -f "wall test"
