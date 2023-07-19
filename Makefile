@@ -15,4 +15,4 @@ push:
 # Run inside docker. Assumes the tokens are set in the host environment
 run:
 	docker build -t bonobot . && \
-	docker run -p 8000 -e SLACK_API_TOKEN -e SLACK_BOT_TOKEN bonobot
+	docker run -p 8000 -e ${SLACK_API_TOKEN} -e ${SLACK_BOT_TOKEN} bonobot
