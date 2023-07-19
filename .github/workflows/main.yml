@@ -26,8 +26,8 @@ jobs:
     - name: Connect via SSH to server
       env:
         SERVER: ${{ secrets.SERVER }}
-        SLACK_API_TOKEN: ${{ SLACK_API_TOKEN }}
-        SLACK_BOT_TOKEN: ${{ SLACK_BOT_TOKEN }}
+        SLACK_API_TOKEN: ${{ secrets.SLACK_API_TOKEN }}
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       run: |
         ssh -i id_ed25519_bonobot $SERVER \
             -o StrictHostKeyChecking=no \
