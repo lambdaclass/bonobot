@@ -2,7 +2,7 @@ name: Deploy Bonobot
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
 
