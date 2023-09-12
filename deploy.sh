@@ -7,7 +7,7 @@ set -ex
 cd /root/bonobot
 
 # Update codebase
-git pull
+git pull origin master
 
 # Remove old container, build and run the new (updated) on.
 make run SLACK_API_TOKEN=$1 SLACK_BOT_TOKEN=$2
