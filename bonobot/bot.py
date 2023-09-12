@@ -156,7 +156,7 @@ class HaikuBot(BaseBot):
 
     def is_happy_birthday_message(self, message: str):
         # remove happy birthday messages
-        happy_birthday_messages = ["happy birthday", "mcf", "happy bday", "feliz cumple", "felizz cumple", "cumple feliz", "felices cumpleaños"]
+        happy_birthday_messages = ["happy birthday", "mcf", "happy bday", "feliz cumple", "felizz cumple", "cumple feliz", "felices cumple"]
         return any([x in message.lower() for x in happy_birthday_messages])
 
     def pick_3_messages(self, phrases):
