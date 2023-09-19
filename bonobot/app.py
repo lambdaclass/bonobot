@@ -17,6 +17,7 @@ BOTS = [ShareBot('bono', channels=['out_of_context_bono'], emoji=':bono3:', user
         HaikuBot("haiku", {"java": 600, "random_español": 3000, "economia": 400, "adroll": 400}, ":basho:", "HaikuBot"),
         ReactionBot('inchequeable', ':inchequeable:', 'InchequeableBot', 'inchequeable.txt'),
         ReactionBot('dalessandro', ':fuera:', 'PibeDaleBot', 'dalessandro.txt'),
+        ReactionBot('mega', ':mega_red_hand:', 'MegaBot', 'mega.txt'),
         RandomReactionBot('chaja', ':chaja:', 'Chaja')]
 
 def make_app():
