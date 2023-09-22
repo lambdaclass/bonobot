@@ -1,0 +1,32 @@
+name: Deploy Bonobot
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  deploy:
+    name: Build and deploy Bonobot.
+    runs-on: ubuntu-latest
+    
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3.5.0
+
+    - name: Create ssh private key file from env var
+      env:
+        SSH_KEY: ${{ secrets.SSH_KEY }}
+      run: |
+        set -ex
+        sed -E 's/(-+(BEGIN|END) OPENSSH PRIVATE KEY-+) *| +/\1\n/g' <<< "$SSH_KEY" > id_ed25519_bonobot
+        chmod 400 id_ed25519_bonobot
+
+    - name: Connect via SSH to server
+      env:
+        SERVER: ${{ secrets.SERVER }}
+        SLACK_API_TOKEN: ${{ secrets.SLACK_API_TOKEN }}
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      run: |
+        ssh -i id_ed25519_bonobot $SERVER -o StrictHostKeyChecking=no /root/bonobot/deploy.sh $SLACK_API_TOKEN $SLACK_BOT_TOKEN

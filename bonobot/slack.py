@@ -4,7 +4,7 @@ import requests
 
 
 def channel_id(channel_name):
-    channels = api_request("conversations.list")["channels"]
+    channels = api_request("conversations.list?limit=200")["channels"]
     return [ch for ch in channels if ch["name"] == channel_name][0]["id"]
 
 
