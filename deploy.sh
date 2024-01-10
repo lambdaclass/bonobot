@@ -4,7 +4,7 @@
 set -ex
 
 # Change directory to bot's
-cd /home/dev/bonobot
+cd /home/dev/bonobot/
 
 # Update codebase
 git pull origin master
