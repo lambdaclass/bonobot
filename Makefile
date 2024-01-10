@@ -1,7 +1,7 @@
 .PHONY: build push run
 
 build:
-	@python -m venv venv && . venv/bin/activate && \
+	@python3 -m venv venv && . venv/bin/activate && \
 	pip install -r requirements.txt && pip install -r dev-requirements.txt
 
 # Build and push to a docker registry, e.g.
