@@ -10,4 +10,6 @@ cd /home/dev/bonobot
 git pull origin master
 
 # Remove old container, build and run the new (updated) on.
-make run SLACK_API_TOKEN=$1 SLACK_BOT_TOKEN=$2
+docker compose down
+docker compose build
+docker compose up -d

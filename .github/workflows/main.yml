@@ -39,4 +39,7 @@ jobs:
         SLACK_API_TOKEN: ${{ secrets.SLACK_API_TOKEN }}
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       run: |
-        ssh dev@$TS_HOST /home/dev/bonobot/deploy.sh $SLACK_API_TOKEN $SLACK_BOT_TOKEN
+        ssh dev@$TS_HOST \
+          SLACK_API_TOKEN=${SLACK_API_TOKEN} \
+          SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN} \
+          /home/dev/bonobot/deploy.sh

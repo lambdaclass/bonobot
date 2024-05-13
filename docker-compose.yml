@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  bonobot:
+    image: bonobot
+    ports:
+      - "80:8000" # Map container port 8000 to host port 80
+    environment: # Set env vars from environment
+      - SLACK_API_TOKEN
+      - SLACK_BOT_TOKEN
+    restart: unless-stopped # Restart container automatically on failure
