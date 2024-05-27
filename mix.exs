@@ -13,11 +13,15 @@ defmodule Bonobot.MixProject do
 
   def application do
     [
+      mod: {Bonobot, []},
       extra_applications: [:logger]
     ]
   end
 
   defp deps do
-    []
+    [
+      {:websockex, "~> 0.4.3"},
+      {:req, "~> 0.4.14"}
+    ]
   end
 end
