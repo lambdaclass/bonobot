@@ -3,20 +3,21 @@ defmodule Bonobot.API do
 
   @base_url "https://slack.com/api"
 
-  def new(token) do
+  def new() do
+    token = Application.fetch_env!(:bonobot, :slack_bot_token)
     Req.new(base_url: @base_url, auth: {:bearer, token})
   end
 
-  def get(endpoint, token, args \\ %{}) do
-    Req.get(new(token),
+  def get(endpoint, args \\ %{}) do
+    Req.get(new(),
       url: endpoint,
       params: args
     )
     |> clean()
   end
 
-  def post(endpoint, token, args \\ %{}) do
-    Req.post(new(token),
+  def post(endpoint, args \\ %{}) do
+    Req.post(new(),
       url: endpoint,
       form: args
     )

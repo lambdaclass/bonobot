@@ -2,12 +2,8 @@ defmodule Bonobot.Socket do
   require Logger
   use WebSockex
 
-  def start_link(token) do
-    {:ok, %{"url" => url}} =
-      Bonobot.API.post(
-        "apps.connections.open",
-        token
-      )
+  def start_link(_) do
+    {:ok, %{"url" => url}} = Bonobot.API.post("apps.connections.open")
 
     WebSockex.start_link(url, __MODULE__, {})
   end
@@ -38,6 +34,10 @@ defmodule Bonobot.Socket do
         state
       ) do
     Logger.debug("Event: #{inspect(event)}")
+
+    Bonobot.Registry.bots(Bonobot.Registry)
+    |> Enum.each(fn bot -> Bonobot.Bot.react_to(bot, event) end)
+
     {:ok, state}
   end
 
