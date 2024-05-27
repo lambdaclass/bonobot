@@ -2,8 +2,8 @@ defmodule Bonobot.Socket do
   require Logger
   use WebSockex
 
-  def start_link(_) do
-    {:ok, %{"url" => url}} = Bonobot.API.post("apps.connections.open")
+  def start_link(token) do
+    {:ok, %{"url" => url}} = Bonobot.API.post(token, "apps.connections.open")
 
     WebSockex.start_link(url, __MODULE__, {})
   end

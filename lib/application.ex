@@ -2,9 +2,12 @@ defmodule Bonobot do
   use Application
 
   def start(_type, _args) do
+    slack_app_token = Application.fetch_env!(:bonobot, :slack_app_token)
+    slack_bot_token = Application.fetch_env!(:bonobot, :slack_bot_token)
+
     children = [
-      Bonobot.Socket,
-      Bonobot.Registry
+      {Bonobot.Socket, slack_app_token},
+      {Bonobot.Registry, slack_bot_token}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one)

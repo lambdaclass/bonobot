@@ -1,15 +1,14 @@
 defmodule Bonobot.Registry do
   use Supervisor
 
-  def start_link(_) do
-    Supervisor.start_link(__MODULE__, nil, name: __MODULE__)
+  def start_link(token) do
+    Supervisor.start_link(__MODULE__, token, name: __MODULE__)
   end
 
   @impl true
-  def init(_) do
+  def init(token) do
     children = [
-      Supervisor.child_spec(Bonobot.Bot, id: :bot1),
-      Supervisor.child_spec(Bonobot.Bot, id: :bot2)
+      {Bonobot.Bot, token}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
