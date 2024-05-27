@@ -28,13 +28,21 @@ defmodule Bonobot.Socket do
     {:ok, state}
   end
 
-  def handle_text_frame(%{"type" => "hello"}, state) do
-    Logger.debug("Connected with Slack")
+  def handle_text_frame(%{"type" => "hello"} = message, state) do
+    Logger.debug("Connected with Slack #{inspect(message)}")
+    {:ok, state}
+  end
+
+  def handle_text_frame(
+        %{"type" => "events_api", "payload" => %{"event" => event}},
+        state
+      ) do
+    Logger.debug("Event: #{inspect(event)}")
     {:ok, state}
   end
 
   def handle_text_frame(unhandled, state) do
-    Logger.debug("Unhandled payload: #{unhandled}")
+    Logger.debug("Unhandled payload: #{inspect(unhandled)}")
     {:ok, state}
   end
 end
