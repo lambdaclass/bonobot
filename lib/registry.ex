@@ -6,9 +6,9 @@ defmodule Bonobot.Registry do
   end
 
   @impl true
-  def init(token) do
+  def init(_) do
     children = [
-      {Bonobot.Bot, token}
+      {Bonobot.Bot, %{names: ["bot"], channels: ["random"]}}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

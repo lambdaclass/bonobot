@@ -1,13 +1,13 @@
 defmodule Bonobot.Bot do
   use GenServer
 
-  def start_link(init) do
-    GenServer.start_link(__MODULE__, init)
+  def start_link(state) do
+    GenServer.start_link(__MODULE__, state)
   end
 
   @impl true
-  def init(token) do
-    {:ok, %{token: token}}
+  def init(state) do
+    {:ok, state}
   end
 
   def react_to(bot, event) do
@@ -17,7 +17,7 @@ defmodule Bonobot.Bot do
   @impl true
   def handle_cast({:event, event}, state) do
     state =
-      if is_relevant(event) do
+      if is_relevant(event, state) do
         respond_to(event, state)
       else
         state
@@ -26,18 +26,26 @@ defmodule Bonobot.Bot do
     {:noreply, state}
   end
 
-  def is_relevant(_) do
-    true
+  def is_relevant(event, state) do
+    with text when not is_nil(text) <- event["text"] do
+      String.contains?(text, state[:names])
+    else
+      _ -> false
+    end
   end
 
   def respond_to(event, state) do
     %{
-      "channel" => channel,
-      "text" => text
+      "channel" => channel
     } = event
 
-    Bonobot.API.post(state[:token], "chat.postMessage", channel: channel, text: text)
+    text = Enum.random(responses(state))
+    Bonobot.API.chat_post_message(channel, text)
 
     state
+  end
+
+  def responses(_state) do
+    ["hola", "chau", "arte"]
   end
 end
