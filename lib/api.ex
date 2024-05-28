@@ -24,11 +24,11 @@ defmodule Bonobot.API do
     end
   end
 
-  def apps_connections_open() do
+  def open_connection() do
     Req.post(app_request(), url: "apps.connections.open") |> clean()
   end
 
-  def chat_post_message(channel, text) do
+  def post_message(channel, text) do
     Req.post(bot_request(),
       url: "chat.postMessage",
       form: %{
@@ -37,5 +37,26 @@ defmodule Bonobot.API do
       }
     )
     |> clean()
+  end
+
+  def find_channel_ids(channel_names) do
+    with {:ok, %{body: %{"channels" => channels}}} <-
+           Req.get(bot_request(), url: "conversations.list") do
+      channels
+      |> Enum.filter(&Enum.member?(channel_names, &1["name"]))
+      |> Enum.map(&Map.get(&1, "id"))
+    end
+  end
+
+  def get_channel_messages(channel) do
+    with {:ok, %{body: %{"messages" => messages}}} <-
+           Req.post(bot_request(), url: "conversations.history", form: %{"channel" => channel}) do
+      messages
+      |> Enum.filter(fn message -> message["type"] == "message" && message["subtype"] == nil end)
+      |> Enum.map(&Map.get(&1, "text"))
+      |> MapSet.new()
+    else
+      _ -> MapSet.new()
+    end
   end
 end

@@ -7,6 +7,8 @@ defmodule Bonobot.Bot do
 
   @impl true
   def init(state) do
+    state = Map.update(state, :channels, [], &Bonobot.API.find_channel_ids/1)
+
     {:ok, state}
   end
 
@@ -40,12 +42,14 @@ defmodule Bonobot.Bot do
     } = event
 
     text = Enum.random(responses(state))
-    Bonobot.API.chat_post_message(channel, text)
+    Bonobot.API.post_message(channel, text)
 
     state
   end
 
-  def responses(_state) do
-    ["hola", "chau", "arte"]
+  def responses(state) do
+    state[:channels]
+    |> Enum.map(&Bonobot.API.get_channel_messages/1)
+    |> Enum.reduce(&MapSet.union/2)
   end
 end

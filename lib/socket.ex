@@ -3,7 +3,7 @@ defmodule Bonobot.Socket do
   use WebSockex
 
   def start_link(_) do
-    {:ok, %{"url" => url}} = Bonobot.API.apps_connections_open()
+    {:ok, %{"url" => url}} = Bonobot.API.open_connection()
     WebSockex.start_link(url, __MODULE__, {})
   end
 
