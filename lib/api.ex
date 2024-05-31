@@ -45,6 +45,8 @@ defmodule Bonobot.API do
       channels
       |> Enum.filter(&Enum.member?(channel_names, &1["name"]))
       |> Enum.map(&Map.get(&1, "id"))
+    else
+      _ -> []
     end
   end
 
