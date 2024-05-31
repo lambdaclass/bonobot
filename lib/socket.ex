@@ -1,4 +1,13 @@
 defmodule Bonobot.Socket do
+  @moduledoc """
+  A websocket client for slack
+
+  Receives slack events and dispatches them to all the avilable bots.
+
+  Websockets are easier for testing locally. The python implementation uses a
+  web server instead of a websocket, so this module may need to change.
+  """
+
   require Logger
   use WebSockex
 

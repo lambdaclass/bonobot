@@ -1,9 +1,21 @@
 defmodule Bonobot.Bot do
+  @moduledoc """
+  A GenServer that controls a specific slack bot user
+
+  The main way to interact with the bot is through `Bonobot.Bot.react_to`.
+  """
+
   use GenServer
 
   defmodule State do
     @enforce_keys [:names, :channels]
     defstruct [:names, :channels]
+
+    @typedoc """
+    - names: the names which the bot responds to
+    - channels: the channels (by id) the bot takes its responses from
+    """
+    @type t :: %State{names: list(String), channels: list(String)}
   end
 
   def start_link(state) do
@@ -20,6 +32,11 @@ defmodule Bonobot.Bot do
     {:ok, state}
   end
 
+  @doc """
+  Sends the `:event` cast to the bot
+
+  The bot decides if it's a relevant event and responds appropiately.
+  """
   def react_to(bot, event) do
     GenServer.cast(bot, {:event, event})
   end

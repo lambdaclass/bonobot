@@ -1,4 +1,10 @@
 defmodule Bonobot.API do
+  @moduledoc """
+  A wrapper for the slack API
+
+  The API keys are read from application config.
+  """
+
   require Logger
 
   @base_url "https://slack.com/api"
