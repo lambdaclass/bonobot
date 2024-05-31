@@ -1,13 +1,21 @@
 defmodule Bonobot.Bot do
   use GenServer
 
+  defmodule State do
+    @enforce_keys [:names, :channels]
+    defstruct [:names, :channels]
+  end
+
   def start_link(state) do
     GenServer.start_link(__MODULE__, state)
   end
 
   @impl true
-  def init(state) do
-    state = Map.update(state, :channels, [], &Bonobot.API.find_channel_ids/1)
+  def init(%{names: names, channel_names: channels}) do
+    state = %State{
+      names: names,
+      channels: Bonobot.API.find_channel_ids(channels)
+    }
 
     {:ok, state}
   end
@@ -28,27 +36,27 @@ defmodule Bonobot.Bot do
     {:noreply, state}
   end
 
-  def is_relevant(event, state) do
+  defp is_relevant(event, state) do
     with text when not is_nil(text) <- event["text"] do
-      String.contains?(text, state[:names])
+      String.contains?(text, state.names)
     else
       _ -> false
     end
   end
 
-  def respond_to(event, state) do
+  defp respond_to(event, state) do
     %{
       "channel" => channel
     } = event
 
-    text = Enum.random(responses(state))
-    Bonobot.API.post_message(channel, text)
+    response = Enum.random(possible_responses(state))
+    Bonobot.API.post_message(channel, response)
 
     state
   end
 
-  def responses(state) do
-    state[:channels]
+  defp possible_responses(state) do
+    state.channels
     |> Enum.map(&Bonobot.API.get_channel_messages/1)
     |> Enum.reduce(&MapSet.union/2)
   end
