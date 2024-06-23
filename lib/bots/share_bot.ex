@@ -1,11 +1,10 @@
-defmodule Bonobot.Bot do
+defmodule Bonobot.ShareBot do
   @moduledoc """
-  A GenServer that controls a specific slack bot user
-
-  The main way to interact with the bot is through `Bonobot.Bot.react_to`.
+  When mentioned, it responds with a random
+  message taken from selected channels
   """
 
-  use GenServer
+  use Bonobot.Bot
 
   defmodule State do
     @enforce_keys [:names, :channels]
@@ -18,10 +17,6 @@ defmodule Bonobot.Bot do
     @type t :: %State{names: list(String), channels: list(String)}
   end
 
-  def start_link(state) do
-    GenServer.start_link(__MODULE__, state)
-  end
-
   @impl true
   def init(%{names: names, channel_names: channels}) do
     state = %State{
@@ -32,25 +27,13 @@ defmodule Bonobot.Bot do
     {:ok, state}
   end
 
-  @doc """
-  Sends the `:event` cast to the bot
-
-  The bot decides if it's a relevant event and responds appropiately.
-  """
-  def react_to(bot, event) do
-    GenServer.cast(bot, {:event, event})
-  end
-
   @impl true
-  def handle_cast({:event, event}, state) do
-    state =
-      if is_relevant(event, state) do
-        respond_to(event, state)
-      else
-        state
-      end
-
-    {:noreply, state}
+  def handle_event(event, state) do
+    if is_relevant(event, state) do
+      respond_to(event, state)
+    else
+      state
+    end
   end
 
   defp is_relevant(event, state) do
