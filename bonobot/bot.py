@@ -128,17 +128,35 @@ class ShareBot(BaseBot):
                 resp = slack.api_request(
                     "conversations.history", channel=channel_id, cursor=cursor
                 )
-                messages += [
-                    msg["attachments"][0]["text"]
-                    for msg in resp["messages"]
-                    if slack.is_share_message(msg, self.filter_author)
-                ]
+                for msg in resp["messages"]:
+                    quote = self.parse_quote(msg)
+                    if quote is None:
+                        continue
+                    messages.append(quote)
 
                 if not resp["has_more"]:
                     break
                 cursor = resp["response_metadata"]["next_cursor"]
 
         return messages
+
+    def parse_quote(self, msg):
+        """
+        Parses quotes from the channel history.
+        These can be shared messages or manual quotes.
+        In case there is no quote, returns None.
+        """
+        if slack.is_share_message(msg, self.filter_author):
+            # It's a shared messaged
+            return msg["attachments"][0]["text"]
+
+        # Might be a manual quote, so try to parse it
+        quote = [
+            line.lstrip(">")
+            for line in msg["text"].splitlines()
+            if line.startswith(">")
+        ]
+        return None if len(quote) == 0 else "\n".join(quote).strip()
 
 
 class HaikuBot(BaseBot):
