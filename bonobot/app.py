@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 BOTS = [ShareBot('bono', channels=['out_of_context_bono'], emoji=':bono3:', username='BonoBot'),
         ShareBot('lambda', channels=['out_of_context_lambda'], emoji=':lambda:', username='LambdaBot'),
-        ShareBot('pelito','little hair', channels=['out_of_context_pelito'], emoji=':future-pelito:', username='PelitoBot'),
+        ShareBot(['pelito','little hair'], channels=['out_of_context_pelito'], emoji=':future-pelito:', username='PelitoBot'),
         FileBot(['peron', 'pocho', 'el general'], icon_emoji=':pochobot:', username='PochoBot', source_file='pocho.txt'),
         FileBot('diego', icon_emoji=':lastima-no:', username="DiegoBot", source_file='diego.txt'),
         FileBot('moria', icon_emoji=':moria:', username="MoriaBot", source_file='moria.txt'),
